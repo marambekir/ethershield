@@ -8,5 +8,6 @@ anvil:    ; anvil
 deploy:   ; forge script script/DeployReentrancy.s.sol --rpc-url http://127.0.0.1:8545 --broadcast
 deploy2:  ; forge script script/DeployAccessControl.s.sol --rpc-url http://127.0.0.1:8545 --broadcast
 deploy3:  ; forge script script/DeployTxOrigin.s.sol --rpc-url http://127.0.0.1:8545 --broadcast
+deploy4:  ; forge script script/DeploySignatureReplay.s.sol --rpc-url http://127.0.0.1:8545 --broadcast
 slither:  ; slither . --filter-paths "lib|test|script" --checklist > docs/slither-report.md || true
 coverage: ; forge coverage --no-match-coverage "test|script"
