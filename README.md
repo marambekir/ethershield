@@ -35,7 +35,7 @@ docs/findings/      une fiche par finding (ES-XX)
 |---|---|---|---|---|---|---|
 | ES-01 | Reentrancy | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ES-02 | Access Control | ✅ | ✅ | ✅ | ✅ | ✅ |
-| ES-03 | tx.origin | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| ES-03 | tx.origin | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ES-04 | Signature Replay | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | ES-05 | Front-running / MEV | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | ES-06 | Denial of Service | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |

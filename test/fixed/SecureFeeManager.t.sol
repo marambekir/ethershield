@@ -111,22 +111,31 @@ contract SecureFeeManagerTest is Test {
 }
 
 /// Handler : des inconnus appellent au hasard toutes les fonctions sensibles.
+/// @dev L'admin est exclu : il a légitimement le droit de modifier la config.
+///      (Le fuzzer réutilise les adresses vues dans le storage : sans ce filtre,
+///       il finit par tirer l'admin et l'invariant échoue à tort.)
 contract AttackerHandler is Test {
     SecureFeeManager public fm;
+    address public immutable admin;
 
-    constructor(SecureFeeManager _fm) { fm = _fm; }
+    constructor(SecureFeeManager _fm, address _admin) { fm = _fm; admin = _admin; }
 
-    function trySetTreasury(address caller, address t) external {
+    modifier notAdmin(address caller) {
+        if (caller == admin) return;
+        _;
+    }
+
+    function trySetTreasury(address caller, address t) external notAdmin(caller) {
         vm.prank(caller);
         try fm.setTreasury(t) {} catch {}
     }
 
-    function trySetFee(address caller, uint256 f) external {
+    function trySetFee(address caller, uint256 f) external notAdmin(caller) {
         vm.prank(caller);
         try fm.setFeeBps(f) {} catch {}
     }
 
-    function tryGrant(address caller, address who) external {
+    function tryGrant(address caller, address who) external notAdmin(caller) {
         bytes32 r = fm.TREASURY_ROLE();
         vm.prank(caller);
         try fm.grantRole(r, who) {} catch {}
@@ -148,7 +157,7 @@ contract SecureFeeManagerInvariantTest is StdInvariant, Test {
 
     function setUp() public {
         fm = new SecureFeeManager(admin, treasury, 100);
-        handler = new AttackerHandler(fm);
+        handler = new AttackerHandler(fm, admin);
         targetContract(address(handler));
     }
 
