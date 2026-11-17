@@ -38,4 +38,4 @@ docs/findings/      une fiche par finding (ES-XX)
 | ES-03 | tx.origin | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ES-04 | Signature Replay | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ES-05 | Front-running / MEV | ✅ | ✅ | ✅ | ✅ | ✅ |
-| ES-06 | Denial of Service | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| ES-06 | Denial of Service | ✅ | ✅ | ✅ | ✅ | ✅ |

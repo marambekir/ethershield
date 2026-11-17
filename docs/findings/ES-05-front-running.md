@@ -35,7 +35,7 @@ Profit d'eve (A)  : 4025502491565627756
 ```
 **2. Démo réelle sur Anvil** (minage manuel, tri par gas price) :
 ```bash
-anvil                                  # terminal 2
+anvil --order fees                     # terminal 2 (tri par frais obligatoire)
 forge script script/DeployFrontRunning.s.sol --rpc-url http://127.0.0.1:8545 --broadcast
 bash script/demo-sandwich.sh <AMM> <TokenA> <TokenB>
 ```

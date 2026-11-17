@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Démo ES-05 : attaque sandwich RÉELLE sur Anvil, ordonnée par le prix du gas.
-# Prérequis : anvil lancé dans un autre terminal, puis DeployFrontRunning déployé.
+# Prérequis : anvil lancé AVEC TRI PAR FRAIS dans un autre terminal :
+#     anvil --order fees
+#   puis DeployFrontRunning déployé.
 # Usage : bash script/demo-sandwich.sh <AMM> <TokenA> <TokenB>
 set -e
 RPC=http://127.0.0.1:8545
@@ -37,12 +39,20 @@ cast rpc evm_setAutomine true --rpc-url $RPC >/dev/null
 
 echo "== Ordre d'exécution dans le bloc :"
 BLOCK=$(cast block-number --rpc-url $RPC)
+FIRST=""
 for H in $(cast rpc eth_getBlockByNumber "$(cast to-hex $BLOCK)" false --rpc-url $RPC \
            | grep -o '"transactions":\[[^]]*\]' | grep -o '0x[0-9a-f]\{64\}'); do
   FROM=$(cast tx $H from --rpc-url $RPC)
   if [ "${FROM,,}" = "${ALICE,,}" ]; then WHO="alice (victime)"; else WHO="eve"; fi
   echo "  $H  <- $WHO"
+  [ -z "$FIRST" ] && FIRST="$WHO"
 done
+if [ "$FIRST" = "alice (victime)" ]; then
+  echo ""
+  echo "!! Anvil a gardé l'ordre d'arrivée (FIFO) : il ne trie pas par frais."
+  echo "!! Arrêtez anvil (Ctrl+C), relancez-le avec :  anvil --order fees"
+  echo "!! puis redéployez DeployFrontRunning et relancez cette démo."
+fi
 
 echo "== Résultat :"
 echo -n "  alice possède en B : "; cast call $TB "balanceOf(address)(uint256)" $ALICE --rpc-url $RPC
