@@ -34,7 +34,7 @@ docs/findings/      une fiche par finding (ES-XX)
 | ID | Vulnérabilité | Vulnérable | Corrigé | PoC | Fuzz/Invariant | Fiche |
 |---|---|---|---|---|---|---|
 | ES-01 | Reentrancy | ✅ | ✅ | ✅ | ✅ | ✅ |
-| ES-02 | Access Control | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
+| ES-02 | Access Control | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ES-03 | tx.origin | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | ES-04 | Signature Replay | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
 | ES-05 | Front-running / MEV | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ |
