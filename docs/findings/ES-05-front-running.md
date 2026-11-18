@@ -40,7 +40,15 @@ forge script script/DeployFrontRunning.s.sol --rpc-url http://127.0.0.1:8545 --b
 bash script/demo-sandwich.sh <AMM> <TokenA> <TokenB>
 ```
 Les 3 transactions sont envoyées dans l'ordre alice → eve → eve, mais le bloc les
-exécute dans l'ordre **eve (50 gwei) → alice (3 gwei) → eve (2 gwei)**.
+exécute dans l'ordre **eve (pourboire 49 gwei) → alice (2 gwei) → eve (1 gwei)**.
+
+**Note technique (EIP-1559)** : un bloc est ordonné par le **pourboire au validateur**
+(*priority fee*), pas par le prix total. Lors des essais, `--gas-price` seul produisait
+trois pourboires identiques et quasi nuls : Anvil 1.9 les a alors gardés dans l'ordre
+d'arrivée (FIFO), alice s'est exécutée normalement et le back-run d'eve a échoué
+(`ERC20InsufficientBalance`). Le script fixe donc `--priority-gas-price` explicitement.
+Cette observation illustre la cause racine : le front-running n'existe que parce que
+l'ordre est **vendu au plus offrant**. Avec un ordre FIFO, l'attaque échoue.
 
 ## Correctif
 1. **`minAmountOut`** : l'utilisateur fixe un plancher (devis − tolérance, ici 0,5 %).

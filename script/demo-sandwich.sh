@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Démo ES-05 : attaque sandwich RÉELLE sur Anvil, ordonnée par le prix du gas.
+# Démo ES-05 : attaque sandwich RÉELLE sur Anvil, ordonnée par le pourboire (priority fee EIP-1559).
+# Le pourboire (--priority-gas-price) est fixé explicitement : sans lui, les versions récentes
+# d'Anvil (>= 1.9) voient trois pourboires identiques et gardent l'ordre d'arrivée.
 # Prérequis : anvil lancé AVEC TRI PAR FRAIS dans un autre terminal :
 #     anvil --order fees
 #   puis DeployFrontRunning déployé.
@@ -22,15 +24,15 @@ EVE_NONCE=$(cast nonce $EVE --rpc-url $RPC)
 echo "== Minage automatique désactivé : les transactions s'accumulent dans le mempool"
 cast rpc evm_setAutomine false --rpc-url $RPC >/dev/null
 
-echo "== 1) alice envoie son swap (gas price : 3 gwei)"
+echo "== 1) alice envoie son swap (pourboire au validateur : 2 gwei)"
 cast send $AMM "swap(address,uint256)" $TA 10ether --private-key $ALICE_PK \
-  --gas-price 3gwei --gas-limit 200000 --async --rpc-url $RPC
-echo "== 2) eve voit le swap dans le mempool et envoie son front-run (gas price : 50 gwei -> passe DEVANT)"
+  --gas-price 3gwei --priority-gas-price 2gwei --gas-limit 200000 --async --rpc-url $RPC
+echo "== 2) eve voit le swap dans le mempool et envoie son front-run (pourboire : 49 gwei -> passe DEVANT)"
 cast send $AMM "swap(address,uint256)" $TA 30ether --private-key $EVE_PK --nonce $EVE_NONCE \
-  --gas-price 50gwei --gas-limit 200000 --async --rpc-url $RPC
-echo "== 3) eve envoie son back-run (gas price : 2 gwei -> passe DERRIÈRE alice)"
+  --gas-price 50gwei --priority-gas-price 49gwei --gas-limit 200000 --async --rpc-url $RPC
+echo "== 3) eve envoie son back-run (pourboire : 1 gwei -> passe DERRIÈRE alice)"
 cast send $AMM "swap(address,uint256)" $TB $EVE_B --private-key $EVE_PK --nonce $((EVE_NONCE + 1)) \
-  --gas-price 2gwei --gas-limit 200000 --async --rpc-url $RPC
+  --gas-price 2gwei --priority-gas-price 1gwei --gas-limit 200000 --async --rpc-url $RPC
 
 echo "== Mempool :"; cast rpc txpool_content --rpc-url $RPC | grep -o '"nonce":"0x[0-9a-f]*"' | wc -l | xargs echo "  transactions en attente :"
 echo "== Minage d'UN bloc contenant les 3 transactions"
