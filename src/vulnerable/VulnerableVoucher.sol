@@ -24,7 +24,7 @@ contract VulnerableVoucher {
         address recovered = ecrecover(ethHash, v, r, s); // brut : pas de contrôle de malléabilité
         require(recovered == signer, "bad signature");
 
-        (bool ok, ) = to.call{value: amount}("");
+        (bool ok,) = to.call{value: amount}("");
         require(ok, "transfer failed");
         emit Claimed(to, amount);
     }

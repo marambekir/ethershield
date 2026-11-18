@@ -50,7 +50,7 @@ contract SecureAuction is ReentrancyGuard {
         if (amount == 0) revert NothingToWithdraw();
         pendingReturns[msg.sender] = 0;
         emit Withdrawn(msg.sender, amount);
-        (bool ok, ) = msg.sender.call{value: amount}("");
+        (bool ok,) = msg.sender.call{value: amount}("");
         if (!ok) revert TransferFailed();
     }
 

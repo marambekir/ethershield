@@ -29,9 +29,7 @@ contract SecureVoucher is EIP712, Nonces {
 
     receive() external payable {}
 
-    function claim(address payable to, uint256 amount, uint256 deadline, bytes calldata signature)
-        external
-    {
+    function claim(address payable to, uint256 amount, uint256 deadline, bytes calldata signature) external {
         // CHECKS
         if (block.timestamp > deadline) revert Expired(deadline);
         uint256 nonce = _useNonce(to); // EFFECT : nonce consommé avant tout transfert
@@ -41,14 +39,12 @@ contract SecureVoucher is EIP712, Nonces {
 
         // INTERACTIONS
         emit Claimed(to, amount, nonce);
-        (bool ok, ) = to.call{value: amount}("");
+        (bool ok,) = to.call{value: amount}("");
         if (!ok) revert TransferFailed();
     }
 
     /// Exposé pour les signataires hors-chaîne et les tests.
-    function hashVoucher(address to, uint256 amount, uint256 nonce, uint256 deadline)
-        external view returns (bytes32)
-    {
+    function hashVoucher(address to, uint256 amount, uint256 nonce, uint256 deadline) external view returns (bytes32) {
         return _hashTypedDataV4(keccak256(abi.encode(VOUCHER_TYPEHASH, to, amount, nonce, deadline)));
     }
 }

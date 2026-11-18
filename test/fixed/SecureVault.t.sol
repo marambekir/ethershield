@@ -17,7 +17,8 @@ contract SecureVaultTest is Test {
         vault = new SecureVault();
         vm.deal(alice, 10 ether);
         vm.deal(eve, 1 ether);
-        vm.prank(alice); vault.deposit{value: 10 ether}();
+        vm.prank(alice);
+        vault.deposit{value: 10 ether}();
         vm.prank(eve);
         attacker = new ReentrancyAttacker(address(vault));
     }
@@ -30,7 +31,8 @@ contract SecureVaultTest is Test {
     }
 
     function test_NormalWithdraw() public {
-        vm.prank(alice); vault.withdraw();
+        vm.prank(alice);
+        vault.withdraw();
         assertEq(alice.balance, 10 ether);
         assertEq(vault.balances(alice), 0);
     }
@@ -58,14 +60,17 @@ contract VaultHandler is Test {
 
     constructor(SecureVault _vault) {
         vault = _vault;
-        for (uint256 i; i < 3; i++) actors.push(makeAddr(string(abi.encode(i))));
+        for (uint256 i; i < 3; i++) {
+            actors.push(makeAddr(string(abi.encode(i))));
+        }
     }
 
     function deposit(uint256 seed, uint96 amount) external {
         amount = uint96(bound(amount, 1, 100 ether));
         address a = actors[seed % actors.length];
         vm.deal(a, amount);
-        vm.prank(a); vault.deposit{value: amount}();
+        vm.prank(a);
+        vault.deposit{value: amount}();
         ghostDeposited += amount;
     }
 
@@ -73,12 +78,15 @@ contract VaultHandler is Test {
         address a = actors[seed % actors.length];
         uint256 bal = vault.balances(a);
         if (bal == 0) return;
-        vm.prank(a); vault.withdraw();
+        vm.prank(a);
+        vault.withdraw();
         ghostWithdrawn += bal;
     }
 
     function sumBalances() external view returns (uint256 s) {
-        for (uint256 i; i < actors.length; i++) s += vault.balances(actors[i]);
+        for (uint256 i; i < actors.length; i++) {
+            s += vault.balances(actors[i]);
+        }
     }
 }
 

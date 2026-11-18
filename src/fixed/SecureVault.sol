@@ -31,7 +31,7 @@ contract SecureVault is ReentrancyGuard {
         emit Withdraw(msg.sender, amount);
 
         // INTERACTIONS
-        (bool ok, ) = msg.sender.call{value: amount}("");
+        (bool ok,) = msg.sender.call{value: amount}("");
         if (!ok) revert TransferFailed();
     }
 

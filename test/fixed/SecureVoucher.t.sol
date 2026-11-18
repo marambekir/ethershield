@@ -21,7 +21,9 @@ contract SecureVoucherTest is Test {
     }
 
     function _sign(SecureVoucher v_, uint256 pk, address to, uint256 amount, uint256 nonce, uint256 deadline)
-        internal view returns (bytes memory)
+        internal
+        view
+        returns (bytes memory)
     {
         bytes32 digest = v_.hashVoucher(to, amount, nonce, deadline);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(pk, digest);

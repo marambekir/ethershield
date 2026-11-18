@@ -22,7 +22,7 @@ contract VulnerableVault {
         require(amount > 0, "nothing to withdraw");
 
         // INTERACTION avant EFFECT -> le destinataire peut rappeler withdraw()
-        (bool ok, ) = msg.sender.call{value: amount}("");
+        (bool ok,) = msg.sender.call{value: amount}("");
         require(ok, "transfer failed");
 
         // unchecked : simule le comportement pré-0.8 (sinon l'underflow annulerait tout)

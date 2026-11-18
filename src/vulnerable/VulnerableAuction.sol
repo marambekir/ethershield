@@ -26,7 +26,7 @@ contract VulnerableAuction {
 
         // Remboursement immédiat de l'ancien leader : son échec fait échouer TOUTE l'offre.
         if (highestBidder != address(0)) {
-            (bool ok, ) = highestBidder.call{value: highestBid}("");
+            (bool ok,) = highestBidder.call{value: highestBid}("");
             require(ok, "refund failed");
         }
 
@@ -40,7 +40,7 @@ contract VulnerableAuction {
         require(!ended, "already ended");
         ended = true;
         emit AuctionEnded(highestBidder, highestBid);
-        (bool ok, ) = seller.call{value: highestBid}("");
+        (bool ok,) = seller.call{value: highestBid}("");
         require(ok, "payout failed");
     }
 }

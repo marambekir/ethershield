@@ -26,8 +26,10 @@ contract SecureAuctionTest is Test {
     }
 
     function test_Regression_RevertingBidderCannotBlock() public {
-        vm.prank(alice); auction.bid{value: 1 ether}();
-        vm.prank(eve);   attacker.attack{value: 1.5 ether}(address(auction));
+        vm.prank(alice);
+        auction.bid{value: 1 ether}();
+        vm.prank(eve);
+        attacker.attack{value: 1.5 ether}(address(auction));
 
         vm.prank(bob);
         auction.bid{value: 50 ether}(); // passe sans problème
@@ -38,22 +40,28 @@ contract SecureAuctionTest is Test {
     }
 
     function test_FullAuctionFlowWithPull() public {
-        vm.prank(alice); auction.bid{value: 1 ether}();
-        vm.prank(bob);   auction.bid{value: 3 ether}();
+        vm.prank(alice);
+        auction.bid{value: 1 ether}();
+        vm.prank(bob);
+        auction.bid{value: 3 ether}();
 
-        vm.prank(alice); auction.withdraw();
+        vm.prank(alice);
+        auction.withdraw();
         assertEq(alice.balance, 100 ether);
 
         vm.warp(block.timestamp + 1 days);
         auction.endAuction();
-        vm.prank(seller); auction.withdraw();
+        vm.prank(seller);
+        auction.withdraw();
         assertEq(seller.balance, 3 ether);
         assertEq(address(auction).balance, 0);
     }
 
     function test_CannotWithdrawTwice() public {
-        vm.prank(alice); auction.bid{value: 1 ether}();
-        vm.prank(bob);   auction.bid{value: 2 ether}();
+        vm.prank(alice);
+        auction.bid{value: 1 ether}();
+        vm.prank(bob);
+        auction.bid{value: 2 ether}();
         vm.startPrank(alice);
         auction.withdraw();
         vm.expectRevert(SecureAuction.NothingToWithdraw.selector);
@@ -62,7 +70,8 @@ contract SecureAuctionTest is Test {
     }
 
     function test_CannotEndTwice() public {
-        vm.prank(alice); auction.bid{value: 1 ether}();
+        vm.prank(alice);
+        auction.bid{value: 1 ether}();
         vm.warp(block.timestamp + 1 days);
         auction.endAuction();
         vm.expectRevert(SecureAuction.AlreadyEnded.selector);
@@ -94,7 +103,9 @@ contract AuctionHandler is Test {
     constructor(SecureAuction _auction) {
         auction = _auction;
         attacker = new DoSAttacker();
-        for (uint256 i; i < 4; i++) bidders.push(makeAddr(string(abi.encode("bidder", i))));
+        for (uint256 i; i < 4; i++) {
+            bidders.push(makeAddr(string(abi.encode("bidder", i))));
+        }
     }
 
     function bid(uint256 seed, uint96 raise) external {
@@ -119,7 +130,9 @@ contract AuctionHandler is Test {
     }
 
     function totalPending() external view returns (uint256 s) {
-        for (uint256 i; i < bidders.length; i++) s += auction.pendingReturns(bidders[i]);
+        for (uint256 i; i < bidders.length; i++) {
+            s += auction.pendingReturns(bidders[i]);
+        }
         s += auction.pendingReturns(address(attacker));
     }
 }

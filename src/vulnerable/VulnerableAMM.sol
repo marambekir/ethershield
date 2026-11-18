@@ -27,9 +27,7 @@ contract VulnerableAMM {
         reserveB += amountB;
     }
 
-    function getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)
-        public pure returns (uint256)
-    {
+    function getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) public pure returns (uint256) {
         uint256 amountInWithFee = amountIn * 997;
         return (amountInWithFee * reserveOut) / (reserveIn * 1000 + amountInWithFee);
     }
@@ -45,8 +43,13 @@ contract VulnerableAMM {
         amountOut = getAmountOut(amountIn, rIn, rOut);
 
         inTok.transferFrom(msg.sender, address(this), amountIn);
-        if (aToB) { reserveA += amountIn; reserveB -= amountOut; }
-        else      { reserveB += amountIn; reserveA -= amountOut; }
+        if (aToB) {
+            reserveA += amountIn;
+            reserveB -= amountOut;
+        } else {
+            reserveB += amountIn;
+            reserveA -= amountOut;
+        }
         outTok.transfer(msg.sender, amountOut);
         emit Swap(msg.sender, tokenIn, amountIn, amountOut);
     }

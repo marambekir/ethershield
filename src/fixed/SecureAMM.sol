@@ -34,9 +34,7 @@ contract SecureAMM {
         reserveB += amountB;
     }
 
-    function getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut)
-        public pure returns (uint256)
-    {
+    function getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) public pure returns (uint256) {
         uint256 amountInWithFee = amountIn * 997;
         return (amountInWithFee * reserveOut) / (reserveIn * 1000 + amountInWithFee);
     }
@@ -49,7 +47,8 @@ contract SecureAMM {
     }
 
     function swap(address tokenIn, uint256 amountIn, uint256 minAmountOut, uint256 deadline)
-        external returns (uint256 amountOut)
+        external
+        returns (uint256 amountOut)
     {
         if (block.timestamp > deadline) revert Expired(deadline);
         bool aToB = tokenIn == address(tokenA);
@@ -60,8 +59,13 @@ contract SecureAMM {
         amountOut = getAmountOut(amountIn, rIn, rOut);
         if (amountOut < minAmountOut) revert SlippageExceeded(amountOut, minAmountOut);
 
-        if (aToB) { reserveA += amountIn; reserveB -= amountOut; }
-        else      { reserveB += amountIn; reserveA -= amountOut; }
+        if (aToB) {
+            reserveA += amountIn;
+            reserveB -= amountOut;
+        } else {
+            reserveB += amountIn;
+            reserveA -= amountOut;
+        }
         inTok.safeTransferFrom(msg.sender, address(this), amountIn);
         outTok.safeTransfer(msg.sender, amountOut);
         emit Swap(msg.sender, tokenIn, amountIn, amountOut);

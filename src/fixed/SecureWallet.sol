@@ -18,7 +18,7 @@ contract SecureWallet is Ownable {
     function transfer(address payable to, uint256 amount) external onlyOwner {
         if (to == address(0)) revert ZeroAddress();
         emit Transfer(to, amount);
-        (bool ok, ) = to.call{value: amount}("");
+        (bool ok,) = to.call{value: amount}("");
         if (!ok) revert TransferFailed();
     }
 }

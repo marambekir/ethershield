@@ -26,8 +26,7 @@ contract SecureFeeManagerTest is Test {
     function test_Regression_CannotRedirectTreasury() public {
         bytes32 role = fm.TREASURY_ROLE(); // lu AVANT vm.prank (sinon le prank est consommé)
         vm.prank(eve);
-        vm.expectRevert(abi.encodeWithSelector(
-            IAccessControl.AccessControlUnauthorizedAccount.selector, eve, role));
+        vm.expectRevert(abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, eve, role));
         fm.setTreasury(eve);
 
         fm.withdrawFees(); // n'importe qui peut déclencher, mais l'argent va au bon endroit
@@ -38,8 +37,7 @@ contract SecureFeeManagerTest is Test {
     function test_Regression_CannotChangeFee() public {
         bytes32 role = fm.FEE_MANAGER_ROLE();
         vm.prank(eve);
-        vm.expectRevert(abi.encodeWithSelector(
-            IAccessControl.AccessControlUnauthorizedAccount.selector, eve, role));
+        vm.expectRevert(abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, eve, role));
         fm.setFeeBps(10_000);
     }
 
@@ -53,8 +51,9 @@ contract SecureFeeManagerTest is Test {
         bytes32 role = fm.FEE_MANAGER_ROLE();
         bytes32 adminRole = fm.DEFAULT_ADMIN_ROLE();
         vm.prank(eve);
-        vm.expectRevert(abi.encodeWithSelector(
-            IAccessControl.AccessControlUnauthorizedAccount.selector, eve, adminRole));
+        vm.expectRevert(
+            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, eve, adminRole)
+        );
         fm.grantRole(role, eve);
     }
 
@@ -118,7 +117,10 @@ contract AttackerHandler is Test {
     SecureFeeManager public fm;
     address public immutable admin;
 
-    constructor(SecureFeeManager _fm, address _admin) { fm = _fm; admin = _admin; }
+    constructor(SecureFeeManager _fm, address _admin) {
+        fm = _fm;
+        admin = _admin;
+    }
 
     modifier notAdmin(address caller) {
         if (caller == admin) return;
@@ -146,7 +148,9 @@ contract AttackerHandler is Test {
         try fm.pay{value: amount}(payable(address(0xBEEF))) {} catch {}
     }
 
-    function withdraw() external { try fm.withdrawFees() {} catch {} }
+    function withdraw() external {
+        try fm.withdrawFees() {} catch {}
+    }
 }
 
 contract SecureFeeManagerInvariantTest is StdInvariant, Test {

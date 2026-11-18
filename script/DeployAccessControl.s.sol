@@ -11,8 +11,8 @@ contract DeployAccessControl is Script {
     function run() external {
         require(block.chainid == 31337, "LAB ONLY: Anvil chainId 31337");
         // Compte n°0 d'Anvil = admin ; compte n°1 = trésorerie (fonds fictifs)
-        uint256 pk = vm.envOr("PRIVATE_KEY",
-            uint256(0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80));
+        uint256 pk =
+            vm.envOr("PRIVATE_KEY", uint256(0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80));
         address admin = vm.addr(pk);
         address treasury = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
 

@@ -25,8 +25,7 @@ contract SecureWalletTest is Test {
     function test_Regression_PhishingBlocked() public {
         // msg.sender vu par le wallet = le contrat piège, PAS alice
         vm.prank(alice, alice);
-        vm.expectRevert(abi.encodeWithSelector(
-            Ownable.OwnableUnauthorizedAccount.selector, address(phishing)));
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, address(phishing)));
         phishing.claimAirdrop(address(wallet));
 
         assertEq(address(wallet).balance, 10 ether, "funds intact");
@@ -44,8 +43,7 @@ contract SecureWalletTest is Test {
     function testFuzz_OnlyDirectOwnerCall(address caller, address origin) public {
         vm.assume(caller != alice);
         vm.prank(caller, origin);
-        vm.expectRevert(abi.encodeWithSelector(
-            Ownable.OwnableUnauthorizedAccount.selector, caller));
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, caller));
         wallet.transfer(payable(caller), 1 ether);
         assertEq(address(wallet).balance, 10 ether);
     }

@@ -20,14 +20,16 @@ contract SecureAMMTest is Test {
         tA = new MockToken("Token A", "TKA");
         tB = new MockToken("Token B", "TKB");
         amm = new SecureAMM(tA, tB);
-        tA.mint(lp, 100 ether); tB.mint(lp, 100 ether);
+        tA.mint(lp, 100 ether);
+        tB.mint(lp, 100 ether);
         vm.startPrank(lp);
         tA.approve(address(amm), type(uint256).max);
         tB.approve(address(amm), type(uint256).max);
         amm.addLiquidity(100 ether, 100 ether);
         vm.stopPrank();
         tA.mint(alice, 10 ether);
-        vm.prank(alice); tA.approve(address(amm), type(uint256).max);
+        vm.prank(alice);
+        tA.approve(address(amm), type(uint256).max);
         tA.mint(eve, 30 ether);
         vm.startPrank(eve);
         tA.approve(address(amm), type(uint256).max);
@@ -99,7 +101,9 @@ contract AMMHandler is Test {
     MockToken public tB;
 
     constructor(SecureAMM _amm, MockToken _a, MockToken _b) {
-        amm = _amm; tA = _a; tB = _b;
+        amm = _amm;
+        tA = _a;
+        tB = _b;
         tA.approve(address(amm), type(uint256).max);
         tB.approve(address(amm), type(uint256).max);
     }
@@ -128,7 +132,8 @@ contract SecureAMMInvariantTest is StdInvariant, Test {
         tA = new MockToken("Token A", "TKA");
         tB = new MockToken("Token B", "TKB");
         amm = new SecureAMM(tA, tB);
-        tA.mint(address(this), 100 ether); tB.mint(address(this), 100 ether);
+        tA.mint(address(this), 100 ether);
+        tB.mint(address(this), 100 ether);
         tA.approve(address(amm), type(uint256).max);
         tB.approve(address(amm), type(uint256).max);
         amm.addLiquidity(100 ether, 100 ether);

@@ -8,7 +8,7 @@ pragma solidity 0.8.24;
 contract VulnerableFeeManager {
     address public owner;
     address public treasury;
-    uint256 public feeBps;          // 100 bps = 1 %
+    uint256 public feeBps; // 100 bps = 1 %
     uint256 public collectedFees;
     bool public initialized;
 
@@ -40,7 +40,7 @@ contract VulnerableFeeManager {
     function pay(address payable to) external payable {
         uint256 fee = (msg.value * feeBps) / 10_000;
         collectedFees += fee;
-        (bool ok, ) = to.call{value: msg.value - fee}("");
+        (bool ok,) = to.call{value: msg.value - fee}("");
         require(ok, "pay failed");
         emit Paid(msg.sender, to, msg.value, fee);
     }
@@ -49,7 +49,7 @@ contract VulnerableFeeManager {
     function withdrawFees() external {
         uint256 amount = collectedFees;
         collectedFees = 0;
-        (bool ok, ) = treasury.call{value: amount}("");
+        (bool ok,) = treasury.call{value: amount}("");
         require(ok, "withdraw failed");
     }
 }

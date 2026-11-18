@@ -52,14 +52,14 @@ contract SecureFeeManager is AccessControl {
         uint256 fee = (msg.value * feeBps) / 10_000;
         collectedFees += fee;
         emit Paid(msg.sender, to, msg.value, fee);
-        (bool ok, ) = to.call{value: msg.value - fee}("");
+        (bool ok,) = to.call{value: msg.value - fee}("");
         if (!ok) revert TransferFailed();
     }
 
     function withdrawFees() external {
         uint256 amount = collectedFees;
         collectedFees = 0;
-        (bool ok, ) = treasury.call{value: amount}("");
+        (bool ok,) = treasury.call{value: amount}("");
         if (!ok) revert TransferFailed();
     }
 }

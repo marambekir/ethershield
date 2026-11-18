@@ -19,7 +19,7 @@ contract VulnerableWallet {
     ///      même si l'appel passe par un contrat intermédiaire malveillant.
     function transfer(address payable to, uint256 amount) external {
         require(tx.origin == owner, "not owner");
-        (bool ok, ) = to.call{value: amount}("");
+        (bool ok,) = to.call{value: amount}("");
         require(ok, "transfer failed");
         emit Transfer(to, amount);
     }
